@@ -1,6 +1,7 @@
 import { View, Text, Dimensions, TouchableWithoutFeedback, Image } from 'react-native'
 import React from 'react'
 import Carousel from 'react-native-reanimated-carousel'
+import { image500 } from '../api/movidedb';
 
 
 const width = Dimensions.get('screen').width;
@@ -16,11 +17,12 @@ const TrendingMovies = ({ data }) => {
           height={height / 2 + 30}
           data={data}
           withAnimation={{ type: 'spring' }}
+          pagingEnabled
           modeConfig={{ showLength: 3, snapDirection: 'left', rotateZDeg: 100 }}
           mode='parallax'
-          renderItem={({ index }) => (
+          renderItem={({ item }) => (
             <View style={{ alignItems: 'center' }}>
-              <MovieCard></MovieCard>
+              <MovieCard item={item}></MovieCard>
             </View>
 
           )}
@@ -36,7 +38,7 @@ const MovieCard = ({ item, handleClick }) => {
   return (
     <TouchableWithoutFeedback>
       <Image
-        source={require('../assets/images/moviePoster1.png')}
+        source={{uri:image500(item.poster_path)}}
         style={{
           width: width * 0.8,
           height: height * 0.6,

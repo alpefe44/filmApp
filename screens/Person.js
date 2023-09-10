@@ -75,7 +75,7 @@ const Person = () => {
       </View>
 
       <View style={{ marginTop: 25 }}>
-        <MovieList data={personMovie} title={'Films'} hideSeeAll = {false}></MovieList>
+        { /*<MovieList data={personMovie} title={'Films'} hideSeeAll = {false}></MovieList> */}
       </View>
 
 

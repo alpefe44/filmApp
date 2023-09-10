@@ -1,12 +1,13 @@
 import { View, Text, FlatList, TouchableWithoutFeedback, Image, Dimensions } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { image185 } from '../api/movidedb';
 
 
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
 
-const MovieList = ({ data, title , hideSeeAll = true }) => {
+const MovieList = ({ data, title, hideSeeAll = true }) => {
 
   return (
     <View>
@@ -17,7 +18,7 @@ const MovieList = ({ data, title , hideSeeAll = true }) => {
 
       <FlatList
         data={data}
-        renderItem={(item) => (
+        renderItem={({ item }) => (
           <View style={{ padding: 15 }}>
             <MovieCard item={item}></MovieCard>
           </View>
@@ -31,14 +32,14 @@ const MovieList = ({ data, title , hideSeeAll = true }) => {
   )
 }
 
+
 const MovieCard = ({ item }) => {
   const { navigate } = useNavigation();
-  const movieName = "Ant-Man and the Wasp: Quantumania";
   return (
-    <TouchableWithoutFeedback onPress={() => navigate("Movie" , item)}>
+    <TouchableWithoutFeedback onPress={() => navigate("Movie", item)}>
       <View>
         <Image
-          source={require('../assets/images/moviePoster2.png')}
+          source={{ uri: image185(item.poster_path) }}
           style={{
             width: width / 4,
             height: height / 5,
@@ -47,7 +48,7 @@ const MovieCard = ({ item }) => {
           }}
         />
         <Text style={{ color: 'white', fontSize: 12, paddingVertical: 5 }}>
-          {movieName.length > 14 ? movieName.slice(0, 14) + '...' : movieName}
+          {item.title.length > 14 ? item.title.slice(0, 14) + '...' : item.title}
         </Text>
       </View>
 

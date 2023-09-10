@@ -1,30 +1,55 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, Dimensions, ImageBackground } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Cast from '../components/cast';
+import { fetchMovieCredits, fetchMovieDetail, fetchMoviesSimilar, image500 } from '../api/movidedb';
 
 
 const MovieScreen = ({ route }) => {
   const navigation = useNavigation();
   const { params: item } = useRoute();
-
+  console.log(item.id)
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('screen').height;
 
   const [isPress, setIsPress] = useState(false);
-  const [cast, setCast] = useState([1, 2, 3, 4 , 5]);
-  const movieName = "Ant-Man and the Wasp: Quantumania";
+  const [cast, setCast] = useState([]);
+  const [movie, setMovie] = useState({});
+
+
+  useEffect(() => {
+    getMovieDetail(item.id)
+    getMovieCredits(item.id)
+    getSimilarMovies(item.id)
+  }, [item])
+
+  const getMovieDetail = async (id) => {
+    const data = await fetchMovieDetail(id);
+    if (data) {
+      setMovie(data)
+      //console.log(movie, "movie")
+    }
+  }
+  const getMovieCredits = async (id) => {
+    const data = await fetchMovieCredits(id);
+    if(data) setCast(data.cast)
+    console.log(data, "credits")
+  }
+  const getSimilarMovies = async (id) => {
+    const data = await fetchMoviesSimilar(id);
+    //console.log(data, "similar")
+  }
 
   return (
     <ScrollView style={{ backgroundColor: '#1f201c' }}>
       <View style={{ width: '100%' }}>
         <View>
           <Image
-            source={require('../assets/images/moviePoster2.png')}
+            source={{ uri: image500(movie?.poster_path) }}
             style={{
               width: width,
               height: height * 0.63,
@@ -48,22 +73,25 @@ const MovieScreen = ({ route }) => {
         </SafeAreaView>
       </View>
       <View style={{ marginTop: -(height * 0.1), alignItems: 'center' }}>
-        <Text style={{ fontSize: 32, color: 'white', fontWeight: 'bold', alignSelf: 'center', textAlign: 'center' }}>{movieName}</Text>
-        <Text style={{ fontSize: 15, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >Released *2020 * 170 min</Text>
+        <Text style={{ fontSize: 32, color: 'white', fontWeight: 'bold', alignSelf: 'center', textAlign: 'center' }}>{movie.title}</Text>
+        <Text style={{ fontSize: 15, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >{movie.release_date} , {movie?.runtime} Min</Text>
 
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Text style={{ marginRight: 10, fontSize: 14, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >Action</Text>
-          <Text style={{ marginRight: 10, fontSize: 14, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >Action</Text>
-          <Text style={{ fontSize: 14, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >Action</Text>
+          {
+            movie?.genres?.map((genre, index) => {
+              return (
+                <Text style={{ marginRight: 10, fontSize: 14, color: 'white', fontWeight: '200', alignSelf: 'center', textAlign: 'center', marginTop: 10 }} >{genre.name}</Text>
+              )
+            })
+          }
         </View>
 
         <Text style={{ fontSize: 12, color: 'white', fontWeight: '200', marginHorizontal: 10, marginTop: 5 }}>
-          Ant-Man ve Wasp: Quantumania, ailesi ile birlikte kendisini bir anda Kuantum Alemi'nde bulan Ant-Man'in maceralarını konu ediyor. Ant-Man, Avengers: Endgame sonrasında insanlar arasında oldukça popüler olmuştur ve bunun tadını çıkarmaktadır. Ancak kızı Cassie'nin yaptığı araç ile Kuantum Alemi'ne sinyal göndermesiyle kendisini bir anda bambaka bir dünyanın içinde bulur. Ona bu sıra dışı evrende ailesiyle birlikte Hope’un babası Hank Pym ve annesi Janet Van Dyne da eşlik eder. Kuantum Alemi'ni keşfeden aile, bu süreçte olağanüst yaratıklarla karşı karşıya kalır.
+          {movie.overview}
         </Text>
       </View>
 
       <View>
-        
         <Cast navigation={navigation} cast={cast}></Cast>
       </View>
 
