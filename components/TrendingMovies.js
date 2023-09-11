@@ -1,7 +1,7 @@
 import { View, Text, Dimensions, TouchableWithoutFeedback, Image } from 'react-native'
 import React from 'react'
 import Carousel from 'react-native-reanimated-carousel'
-import { image500 } from '../api/movidedb';
+import { fallbackMoviePoster, image500 } from '../api/movidedb';
 
 
 const width = Dimensions.get('screen').width;
@@ -38,7 +38,7 @@ const MovieCard = ({ item, handleClick }) => {
   return (
     <TouchableWithoutFeedback>
       <Image
-        source={{uri:image500(item.poster_path)}}
+        source={{uri:image500(item.poster_path) || fallbackMoviePoster}}
         style={{
           width: width * 0.8,
           height: height * 0.6,

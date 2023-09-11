@@ -1,14 +1,13 @@
 import { View, Text, FlatList, TouchableWithoutFeedback, Image, Dimensions } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { image185 } from '../api/movidedb';
+import { fallbackMoviePoster, image185 } from '../api/movidedb';
 
 
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
 
 const MovieList = ({ data, title, hideSeeAll = true }) => {
-
   return (
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -39,7 +38,7 @@ const MovieCard = ({ item }) => {
     <TouchableWithoutFeedback onPress={() => navigate("Movie", item)}>
       <View>
         <Image
-          source={{ uri: image185(item.poster_path) }}
+          source={{ uri: image185(item.poster_path) || fallbackMoviePoster}}
           style={{
             width: width / 4,
             height: height / 5,

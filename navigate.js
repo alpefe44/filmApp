@@ -6,6 +6,7 @@ import HomeScreen from './screens/HomeScreen';
 import MovieScreen from './screens/MovieScreen';
 import Person from './screens/Person';
 import SearchScreen from './screens/SearchScreen';
+import FavoritesScreen from './screens/FavoritesScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -18,6 +19,7 @@ const Root = () => {
         <Stack.Screen component={MovieScreen} name='Movie' options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen component={Person} name="Person" options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen component={SearchScreen} name="Search" options={{ headerShown: false }}></Stack.Screen>
+        <Stack.Screen component={FavoritesScreen} name="Favorite" options={{ headerShown: false }}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   )

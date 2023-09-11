@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/movieList';
+import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpComingMovies } from '../api/movidedb';
 
@@ -45,10 +46,12 @@ const HomeScreen = () => {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#1f201c', flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: '#272829', flex: 1 }}>
       <View style={{ height: 70, width: '100%' }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: '100%', paddingHorizontal: 25 }}>
-          <Ionicons name="ios-reorder-three-outline" size={34} color="white" />
+          <Pressable onPress={() => navigate("Favorite")}>
+            <FontAwesome name="heart" size={34} color="white" />
+          </Pressable>
           <Text style={{ fontSize: 24 }}>
             <Text style={{ color: 'yellow', fontSize: 24 }}>M</Text>ovies
           </Text>
@@ -67,9 +70,9 @@ const HomeScreen = () => {
         {/* Trending Movies Carousel */}
         {trending.length > 0 && <TrendingMovies data={trending} />}
 
-        {upComings.length > 0 && <MovieList data={upComings} title={"Up Comings"}></MovieList>}
+        {upComings.length > 0 && <MovieList data={upComings} title={"Up Comings"} hideSeeAll={false}></MovieList>}
 
-        {topRated.length > 0 && <MovieList data={topRated} title={"Top Rated"}></MovieList>}
+        {topRated.length > 0 && <MovieList data={topRated} title={"Top Rated"} hideSeeAll={false}></MovieList>}
 
       </ScrollView>
     </SafeAreaView>

@@ -1,25 +1,30 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, Dimensions, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Cast from '../components/cast';
-import { fetchMovieCredits, fetchMovieDetail, fetchMoviesSimilar, image500 } from '../api/movidedb';
+import { fallbackMoviePoster, fetchMovieCredits, fetchMovieDetail, fetchMoviesSimilar, image500 } from '../api/movidedb';
+import MovieList from '../components/movieList';
+import { addFavorite, changePressed, deleteFavorite } from '../slice/favoriteSlice';
 
 
 const MovieScreen = ({ route }) => {
+  const favorites = useSelector((state) => state.favorite.items)
+  console.log(favorites)
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const { params: item } = useRoute();
-  console.log(item.id)
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('screen').height;
 
   const [isPress, setIsPress] = useState(false);
   const [cast, setCast] = useState([]);
   const [movie, setMovie] = useState({});
-
+  const [similarMovies, setSimilarMovies] = useState([]);
 
   useEffect(() => {
     getMovieDetail(item.id)
@@ -36,20 +41,21 @@ const MovieScreen = ({ route }) => {
   }
   const getMovieCredits = async (id) => {
     const data = await fetchMovieCredits(id);
-    if(data) setCast(data.cast)
-    console.log(data, "credits")
+    if (data) setCast(data.cast)
+    //console.log(data, "cast")
   }
   const getSimilarMovies = async (id) => {
     const data = await fetchMoviesSimilar(id);
-    //console.log(data, "similar")
+    if (data) setSimilarMovies(data.results)
+    //console.log(data.results)
   }
 
   return (
-    <ScrollView style={{ backgroundColor: '#1f201c' }}>
+    <ScrollView style={{ backgroundColor: '#272829' }}>
       <View style={{ width: '100%' }}>
         <View>
           <Image
-            source={{ uri: image500(movie?.poster_path) }}
+            source={{ uri: image500(movie?.poster_path) || fallbackMoviePoster }}
             style={{
               width: width,
               height: height * 0.63,
@@ -63,13 +69,19 @@ const MovieScreen = ({ route }) => {
             end={{ x: 0.5, y: 1 }}
           ></LinearGradient>
         </View>
+
         <SafeAreaView style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', position: 'absolute', padding: 15 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={32} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsPress(!isPress)} >
-            <Ionicons name="md-heart-sharp" size={32} color={isPress ? 'yellow' : 'white'} />
+
+
+          <TouchableOpacity onPress={() => dispatch(addFavorite({ id: item.id, title: item.title, jpeg: item.poster_path }))} >
+            <Ionicons name="md-heart-sharp" size={32} color={'white'} />
           </TouchableOpacity>
+
+
+
         </SafeAreaView>
       </View>
       <View style={{ marginTop: -(height * 0.1), alignItems: 'center' }}>
@@ -93,6 +105,10 @@ const MovieScreen = ({ route }) => {
 
       <View>
         <Cast navigation={navigation} cast={cast}></Cast>
+      </View>
+
+      <View>
+        <MovieList data={similarMovies} title={'Similar'}></MovieList>
       </View>
 
     </ScrollView>
