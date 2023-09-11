@@ -24,36 +24,37 @@ const FavoritesScreen = () => {
         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 26 }}>Favorites</Text>
       </View>
       <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+        style={{ marginTop: 15 }}
+
       >
-        {
-          favorite.map((item) => {
-            return (
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 22, paddingHorizontal: 15, marginBottom: 10 }}>{item.title}</Text>
-                <TouchableOpacity onPress={() => navigate("Movie", item)}>
-                  <View style={{ width: '100%', height: '100%' }}>
-                    <Image
-                      source={{ uri: image500(item.jpeg) }}
-                      style={{ height: 80, width: 80, borderRadius: 100, marginBottom: 5, borderWidth: 1, borderColor: 'gray', resizeMode: 'contain' }}
+        <View style={{ flexWrap: 'wrap', justifyContent: 'space-between', flexDirection: 'row' }}>
+          {
+            favorite.map((item) => {
+              return (
+             
+                  <TouchableOpacity onPress={() => navigate("Movie", item)}>
+                    <View style={{alignItems: 'center', paddingHorizontal: 15 , marginBottom:5 }}>
+                      <Image
+                        source={{ uri: image500(item.jpeg) }}
+                        style={{ height: 80, width: 80, borderRadius: 100, marginBottom: 5, borderWidth: 1, borderColor: 'gray', resizeMode: 'contain' }}
+                      >
+                      </Image>
+                      <Text style={{ color: 'white', fontSize: 12 }}>{item.title.length > 6 ? item.title.slice(0, 14) + '...' : item.title}</Text>
+                    </View>
+                    <TouchableOpacity style={{ position: 'absolute', top: 0, left: 10 }} onPress={() => dispatch(deleteFavorite({ id: item.id }))}>
+                      <MaterialIcons name="cancel" size={24} color="white" />
+                    </TouchableOpacity>
 
-                    >
-                    </Image>
-                  </View>
-                  <TouchableOpacity style={{ position: 'absolute', top: 0, left: 0 }} onPress={() => dispatch(deleteFavorite({ id: item.id }))}>
-                    <MaterialIcons name="cancel" size={24} color="white" />
                   </TouchableOpacity>
+         
+              )
 
-                </TouchableOpacity>
 
-              </View>
-
-            )
-
-          })
-        }
+            })
+          }
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
